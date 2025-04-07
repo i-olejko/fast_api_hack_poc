@@ -82,3 +82,20 @@ class AgentService:
         await browser_context.close()
 
         return result # Return the final result
+
+    async def run_console(self, strTask: str, strFollowUpTask: str):
+        """
+        Placeholder method for running a console-based task.
+        Currently returns a mock dictionary.
+        """
+        # TODO: Implement actual logic for console task execution
+        print(f"Received console task: {strTask}")
+        print(f"Received follow-up task: {strFollowUpTask}")
+
+        # Return the specified mock dictionary
+        return {
+            "createdName": "mock_created_name",
+            "createdDesc": "mock_created_description",
+            "foundName": "mock_found_name",
+            "fondDesc": "mock_found_description" # Using 'fondDesc' as requested
+        }

@@ -23,7 +23,8 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
 ## Setup
 
 1.  **Clone/Setup Project:** Ensure you are in the project's root directory.
-2.  **Backend Setup:**
+
+2.  **Backend Setup (Python + FastAPI):**
     *   Create and activate a Python virtual environment (if not already done):
         ```bash
         python3 -m venv venv
@@ -34,7 +35,7 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
         ```bash
         pip install fastapi uvicorn
         ```
-3.  **Frontend Setup:**
+3.  **Frontend Setup (React app in `/frontend` directory):**
     *   Navigate to the frontend directory:
         ```bash
         cd frontend
@@ -61,6 +62,10 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
     ```
     *   `--reload` enables auto-reloading for backend development (optional).
     *   You can also run using `python main.py` if the `if __name__ == "__main__":` block is present.
+3. To build and start the entire project (frontend and backend) using npm, you can also run:
+    ```bash
+    npm run start
+    ```
 
 ## Usage
 

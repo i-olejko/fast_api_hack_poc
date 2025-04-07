@@ -47,6 +47,10 @@ agent_service = AgentService()
 class TaskRequest(BaseModel):
     task_text: str
 
+class ConsoleTaskRequest(BaseModel):
+    strTask: str
+    strFollowUpTask: str
+
 build_dir = "frontend/build"
 static_dir = os.path.join(build_dir, "static")
 
@@ -79,6 +83,31 @@ async def run_task(request: TaskRequest):
         print(f"Error during /run_task execution: {e}") # Log the full error server-side
         # Consider logging traceback: import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal Server Error during task execution: {str(e)}")
+
+
+# --- New Endpoint for Running Console Task ---
+@app.post("/run_console_task")
+async def run_console_task(request: ConsoleTaskRequest):
+    try:
+        strTask = request.strTask
+        strFollowUpTask = request.strFollowUpTask
+        if not strTask: # Basic validation
+             raise HTTPException(status_code=400, detail="Missing 'strTask' in request body")
+        # strFollowUpTask can be empty, so no check needed here
+
+        # --- Call the Agent Service Method ---
+        result = await agent_service.run_console(strTask, strFollowUpTask)
+
+        # Assuming the service returns a dictionary-like object suitable for JSONResponse
+        return JSONResponse(content={"status": "success", "result": result})
+
+    except HTTPException as http_exc:
+        # Re-raise HTTPExceptions
+        raise http_exc
+    except Exception as e:
+        # Catch other exceptions
+        print(f"Error during /run_console_task execution: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal Server Error during console task execution: {str(e)}")
 
 
 @app.get("/{full_path:path}") # Catch-all route for SPA routing

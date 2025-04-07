@@ -1,0 +1,17 @@
+i want to modify the frontend part of my project. 
+1. i don't like to use type="submit", instead i would like to use onclick method and inside to call fetch functionality.
+1.1 refactor the code from APP.js, and make each page to have its own js file
+2. i want to modify the main page and use SPA architecture.
+2.1 i want to have navigation bar on the left side with 2 nav items one is called FreeRun and second Console Test
+2.2 the both will have moustly the same structure but will call different API's first will utilize the /run_task API and second will use /run_console_task API
+2.3 the scond page should also have 2 text field for user input one for the task input and second for the follow up task text.
+2.4 the second page should print in a small table the result in the left colum it shuld print the createdName and createdDesc and in right colum it shuld print the foundName name and fondDesc.
+3. back-end should have another API with next path  /run_console_task it will call agent_service.run_console method.
+3.1 method run_console should accept 2 params strTask and strFollowUpTask and sould return object with next props: createdName, createdDesc, foundName, fondDesc,
+3.2 meenwile leeve the run_console method witout actual implementation just add there some mock object to be returned.
+
+Ask me question if i have missed something 
+
+
+
+------------------------------------------------------------
