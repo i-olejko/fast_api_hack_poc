@@ -2,6 +2,9 @@
   "name": "fastapi-react-project",
   "version": "1.0.0",
   "scripts": {
-    "start": "cd frontend && npm install && npm run build && cd .. && venv/bin/uvicorn main:app --reload --host 127.0.0.1 --port 8000"
+    "start": "cd frontend && npm install && npm run build && cd .. && venv/bin/uvicorn main:app --reload --host 127.0.0.1 --port 8000",
+    "build": "cd frontend && npm install && npm run build",
+    "test": "cd frontend && npm test",
+    "lint": "cd frontend && npm run lint"
   }
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../App.css'; // Assuming styles are still in App.css
-import TaskInput from '../components/TaskInput';
 
 function ConsoleTestPage() {
   const [strTask, setStrTask] = useState('');
@@ -53,20 +52,28 @@ function ConsoleTestPage() {
       <div className="console-input-area">
         <div>
           <label htmlFor="taskInput">Task Input:</label>
-          <TaskInput
-            taskText={strTask}
-            setTaskText={setStrTask}
-            onSubmit={handleConsoleSubmit}
-          />
+          <textarea
+            id="taskInput"
+            value={strTask}
+            onChange={(e) => setStrTask(e.target.value)}
+            placeholder="Enter your task here..."
+            rows={10}
+            cols={80}
+            style={{ fontFamily: 'monospace', fontSize: '14px' }} // Basic styling
+          ></textarea>
         </div>
         <div>
           <label htmlFor="followUpInput">Follow-up Task:</label>
-          <TaskInput
-            taskText={strFollowUpTask}
-            setTaskText={setStrFollowUpTask}
-            onSubmit={handleConsoleSubmit}
-          />
+          <textarea
+            id="followUpInput"
+            value={strFollowUpTask}
+            onChange={(e) => setStrFollowUpTask(e.target.value)}
+            rows={10}
+            cols={80}
+            style={{ fontFamily: 'monospace', fontSize: '14px' }} // Basic styling
+          ></textarea>
         </div>
+        <button onClick={handleConsoleSubmit}>Run Task</button>
       </div>
 
       {error && <div className="error-message">Error: {error}</div>}

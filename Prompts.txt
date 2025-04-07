@@ -29,3 +29,9 @@ plz refactor the frontend code.
 currently i have only left nav bar. 
 the goal is to add 'TopBar' or 'header' and move title "HACK DAY 2025" and theme swithcher to top bar element.
 the navigation items should remain in left side navigation section.
+
+------------------------------------------------------------
+plz refactor the ConsoleTestPage:
+the page should have 2 text inputs and only one "Run Task" button that will collect text from both inputs and will post them to backend
+------------------------------------------------------------
+the ConsoleTestPage should have inputs of type textarea
