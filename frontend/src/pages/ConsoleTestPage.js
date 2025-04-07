@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../App.css'; // Assuming styles are still in App.css
+import TaskInput from '../components/TaskInput';
 
 function ConsoleTestPage() {
   const [strTask, setStrTask] = useState('');
@@ -52,25 +53,20 @@ function ConsoleTestPage() {
       <div className="console-input-area">
         <div>
           <label htmlFor="taskInput">Task Input:</label>
-          <input
-            type="text"
-            id="taskInput"
-            value={strTask}
-            onChange={(e) => setStrTask(e.target.value)}
-            placeholder="Enter main task"
+          <TaskInput
+            taskText={strTask}
+            setTaskText={setStrTask}
+            onSubmit={handleConsoleSubmit}
           />
         </div>
         <div>
           <label htmlFor="followUpInput">Follow-up Task:</label>
-          <input
-            type="text"
-            id="followUpInput"
-            value={strFollowUpTask}
-            onChange={(e) => setStrFollowUpTask(e.target.value)}
-            placeholder="Enter follow-up task"
+          <TaskInput
+            taskText={strFollowUpTask}
+            setTaskText={setStrFollowUpTask}
+            onSubmit={handleConsoleSubmit}
           />
         </div>
-        <button onClick={handleConsoleSubmit}>Run Console Task</button>
       </div>
 
       {error && <div className="error-message">Error: {error}</div>}

@@ -53,6 +53,7 @@ body {
 
 .app-container {
   display: flex;
+  flex-direction: column; /* Stack TopBar and main layout vertically */
   min-height: 100vh; /* Ensure it takes full viewport height */
 }
 
@@ -211,4 +212,128 @@ body {
 
 .results-table tr:nth-child(even) {
   background-color: #f9f9f9; /* Zebra striping for rows */
+}
+/* NavBar layout adjustments */
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nav-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+}
+
+.nav-right {
+  margin-top: auto; /* Push dropdown to bottom */
+}
+
+.nav-right select {
+  width: 100%;
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+}
+/* Theme styles */
+.light-theme {
+  /* Defaults already light, so minimal overrides needed */
+}
+
+.dark-theme {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-theme .nav-bar {
+  background-color: #1f1f1f;
+  color: #e0e0e0;
+}
+
+.dark-theme .nav-bar a {
+  color: #b0b0b0;
+}
+
+.dark-theme .nav-bar a:hover,
+.dark-theme .nav-bar a.active {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-theme .content-area {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.dark-theme .task-input-container,
+.dark-theme .output-display-container,
+.dark-theme .console-input-area,
+.dark-theme .results-table-container {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+}
+
+.dark-theme .task-input-container textarea,
+.dark-theme .console-input-area input[type="text"] {
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+.dark-theme .task-input-container button,
+.dark-theme .console-input-area button {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+.dark-theme .task-input-container button:hover,
+.dark-theme .console-input-area button:hover {
+  background-color: #666;
+}
+
+.dark-theme .output-display-container pre {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+.dark-theme .error-message {
+  background-color: #5c2b2e;
+  border-color: #7a3b3f;
+  color: #ffb3b3;
+}
+/* New layout styles for TopBar and main content */
+.top-bar {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+}
+
+.top-bar-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.top-bar select {
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1; /* Take remaining space */
+  min-height: 0; /* Fix for flex overflow */
+}
+.theme-switcher {
+  margin-left: auto;
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
 }

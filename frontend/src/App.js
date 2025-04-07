@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import NavBar from './components/NavBar'; // Will be created
-import FreeRunPage from './pages/FreeRunPage'; // Will be created
-import ConsoleTestPage from './pages/ConsoleTestPage'; // Will be created
+import NavBar from './components/NavBar';
+import TopBar from './components/TopBar';
+import FreeRunPage from './pages/FreeRunPage';
+import ConsoleTestPage from './pages/ConsoleTestPage';
 
 function App() {
+  const [theme, setTheme] = useState('LIGHT');
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+  };
+
   return (
     <Router>
-      <div className="app-container"> {/* Main container for layout */}
-        <NavBar /> {/* Navigation bar on the left */}
-        <div className="content-area"> {/* Content area on the right */}
-          <Routes>
-            <Route path="/" element={<FreeRunPage />} />
-            <Route path="/console-test" element={<ConsoleTestPage />} />
-          </Routes>
+      <div className={`app-container ${theme === 'DARK' ? 'dark-theme' : 'light-theme'}`}> {/* Main container with theme class */}
+        <TopBar theme={theme} onThemeChange={handleThemeChange} />
+        <div className="main-layout">
+          <NavBar />
+          <div className="content-area">
+            <Routes>
+              <Route path="/" element={<FreeRunPage />} />
+              <Route path="/console-test" element={<ConsoleTestPage />} />
+            </Routes>
+          </div>
         </div>
       </div>
     </Router>

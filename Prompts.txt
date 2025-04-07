@@ -15,3 +15,17 @@ Ask me question if i have missed something
 
 
 ------------------------------------------------------------
+
+plz make next changes.
+1. the console test page should also use TaskInput component both in task input and follow-up task.
+2. fronend app should have small top bar that will have title on the left displaying "HACK DAY 2025"
+2.1 top bar should have theme swithcher drop-down on the right side with only 2 options LIGHT and DARK
+2.2 the front end should support theme swithcing mechanism.
+2.3 starting position is LIGHT theme
+
+
+------------------------------------------------------------
+plz refactor the frontend code.
+currently i have only left nav bar. 
+the goal is to add 'TopBar' or 'header' and move title "HACK DAY 2025" and theme swithcher to top bar element.
+the navigation items should remain in left side navigation section.
