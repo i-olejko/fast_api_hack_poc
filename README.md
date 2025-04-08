@@ -1,9 +1,35 @@
-# FastAPI + React Python Code Runner (Hackathon PoC)
+# AI-Powered Browser Automation with FastAPI and React
 
-This project is a proof-of-concept demonstrating a Python FastAPI backend serving a React frontend. The frontend allows users to submit Python code as text, which the backend executes using Python's `exec()` function. The project uses Google's Gemini AI model through LangChain for browser automation and task execution.
+This project demonstrates an AI-powered web automation system that allows users to describe tasks in natural language and have them executed automatically in a web browser. The system uses Google's Gemini AI model through LangChain for understanding and executing tasks, combined with browser automation capabilities.
 
-**🚨 SECURITY WARNING 🚨**
-This application uses `exec()` to run arbitrary Python code submitted by the user. **This is extremely dangerous and should NEVER be used in a production environment or any environment where security is a concern.** This PoC is intended solely for demonstration purposes in a controlled hackathon setting.
+## What it Does
+
+- **Natural Language Task Input**: Users can describe tasks they want to perform on the web in plain English
+- **AI-Powered Automation**: The system uses Google's Gemini AI model to:
+  - Understand the user's task description
+  - Plan the necessary steps to accomplish the task
+  - Execute the steps using browser automation
+- **Browser Automation**: Automatically controls a Chrome browser to:
+  - Navigate to websites
+  - Interact with web elements
+  - Extract information
+  - Perform complex web tasks
+- **Real-Time Feedback**: Provides results and status updates through a modern React interface
+
+## Example Use Cases
+
+- Web research and data gathering
+- Automated form filling
+- Web testing and verification
+- Content extraction and summarization
+- Multi-step web workflows
+
+**🚨 SECURITY WARNING ��**
+This application performs automated browser actions based on user input. While it uses controlled browser automation, please be mindful of:
+- Only use this tool on websites where you have permission to automate interactions
+- Be careful with tasks involving sensitive data or authentication
+- The tool should not be used for any malicious purposes or to violate websites' terms of service
+- Consider rate limiting and respect websites' robots.txt files in production use
 
 ## System Requirements
 
