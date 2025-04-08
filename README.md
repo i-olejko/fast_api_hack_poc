@@ -2,7 +2,7 @@
 
 This project demonstrates an AI-powered web automation system that allows users to describe tasks in natural language and have them executed automatically in a web browser. The system uses Google's Gemini AI model through LangChain for understanding and executing tasks, combined with browser automation capabilities.
 
-## What it Does
+## Features
 
 - **Natural Language Task Input**: Users can describe tasks they want to perform on the web in plain English
 - **AI-Powered Automation**: The system uses Google's Gemini AI model to:
@@ -15,6 +15,11 @@ This project demonstrates an AI-powered web automation system that allows users 
   - Extract information
   - Perform complex web tasks
 - **Real-Time Feedback**: Provides results and status updates through a modern React interface
+- **HD Browser Recording**: Automatically records all browser sessions:
+  - High-definition 1920x1080 resolution
+  - WebM format compatible with modern browsers
+  - Separate recording for each session
+  - Perfect for debugging, documentation, and auditing
 
 ## Example Use Cases
 
@@ -23,8 +28,13 @@ This project demonstrates an AI-powered web automation system that allows users 
 - Web testing and verification
 - Content extraction and summarization
 - Multi-step web workflows
+- Session recording for:
+  - Debugging AI behavior
+  - Creating tutorials
+  - Documenting workflows
+  - Quality assurance testing
 
-**🚨 SECURITY WARNING ��**
+**🚨 SECURITY WARNING**
 This application performs automated browser actions based on user input. While it uses controlled browser automation, please be mindful of:
 - Only use this tool on websites where you have permission to automate interactions
 - Be careful with tasks involving sensitive data or authentication
@@ -38,10 +48,10 @@ This application performs automated browser actions based on user input. While i
 - System dependencies for browser automation:
   ```bash
   # On Ubuntu/Debian:
-  sudo apt-get install -y libgbm1
+  sudo apt-get install -y libgbm1 ffmpeg
 
-  # Or using Playwright's command (if available):
-  sudo playwright install-deps
+  # Or using Playwright's comprehensive installer:
+  playwright install --with-deps
   ```
 
 ## Quick Start (Automated Setup)
@@ -58,10 +68,11 @@ chmod +x setup.sh
 
 The script will:
 1. Create and activate a Python virtual environment
-2. Install all required dependencies
+2. Install all required dependencies (including ffmpeg for recording)
 3. Set up the Playwright browser
 4. Create a `.env` file with default configurations
-5. Build the frontend (if present)
+5. Create the recordings directory
+6. Build the frontend (if present)
 
 After running the script:
 1. Update the `.env` file with your Google API key
@@ -72,17 +83,19 @@ After running the script:
 
 ```
 /
-├── frontend/             # React frontend application (created with Create React App)
-│   ├── build/            # Production build of the React app (served by FastAPI)
+├── frontend/             # React frontend application
+│   ├── build/           # Production build of the React app
 │   ├── public/
-│   ├── src/              # React component source files (App.js, etc.)
+│   ├── src/             # React component source files
 │   ├── package.json
-│   └── ...               # Other CRA files
-├── venv/                 # Python virtual environment
-├── main.py               # FastAPI application file
-├── .env                  # Environment configuration
-├── setup.sh              # Automated setup script
-└── README.md             # This file
+│   └── ...              # Other CRA files
+├── recordings/          # Browser session recordings (WebM format)
+│   └── session_[id]/    # Individual session recordings
+├── venv/                # Python virtual environment
+├── main.py              # FastAPI application file
+├── .env                 # Environment configuration
+├── setup.sh             # Automated setup script
+└── README.md            # This file
 ```
 
 ## Manual Setup (Alternative)
@@ -91,7 +104,17 @@ If you prefer to set up manually or the automated script doesn't work for your e
 
 1. **Clone/Setup Project:** Ensure you are in the project's root directory.
 
-2. **Backend Setup (Python + FastAPI):**
+2. **System Dependencies:**
+    * On Ubuntu/Debian:
+        ```bash
+        sudo apt-get update
+        sudo apt-get install -y libgbm1 ffmpeg
+        ```
+    * On other systems:
+        - Install ffmpeg and browser dependencies manually
+        - Or use Playwright's dependency installer (after installing Playwright)
+
+3. **Backend Setup (Python + FastAPI):**
     *   Create and activate a Python virtual environment (if not already done):
         ```bash
         python3 -m venv venv
@@ -100,11 +123,17 @@ If you prefer to set up manually or the automated script doesn't work for your e
         ```
     *   Install Python dependencies:
         ```bash
+        pip install --upgrade pip
         pip install fastapi uvicorn python-dotenv browser-use playwright langchain-google-genai
         ```
-    *   Install Playwright browser:
+    *   Install Playwright browser and dependencies:
         ```bash
         playwright install chromium
+        playwright install --with-deps  # This installs additional dependencies including ffmpeg
+        ```
+    *   Create recordings directory:
+        ```bash
+        mkdir -p recordings
         ```
     *   Create and configure `.env` file:
         ```bash
@@ -112,7 +141,7 @@ If you prefer to set up manually or the automated script doesn't work for your e
         # Edit .env with your API keys and configuration
         ```
 
-3.  **Frontend Setup (React app in `/frontend` directory):**
+4.  **Frontend Setup (React app in `/frontend` directory):**
     *   Navigate to the frontend directory:
         ```bash
         cd frontend
@@ -182,3 +211,35 @@ Make sure to:
 5.  The output (or any execution error) from the backend will be displayed below the form.
 
 **Remember the security warning! Only run code you trust.**
+
+## Browser Recording Feature
+
+All browser sessions are automatically recorded in high definition and saved in the `recordings` directory:
+
+### Recording Details
+- **Resolution**: 1920x1080 HD
+- **Format**: WebM (web-compatible)
+- **Organization**: Each session gets its own directory (`recordings/session_[id]/`)
+- **Content**: Captures all browser interactions including:
+  - Navigation and page loads
+  - Mouse clicks and form inputs
+  - Scrolling and page changes
+  - File downloads
+  - Tab interactions
+
+### Accessing Recordings
+1. Navigate to the `recordings` directory in your project root
+2. Find your session directory (format: `session_[id]`)
+3. Open the WebM file in any modern browser or media player
+
+### Use Cases
+- **Debugging**: Review AI behavior and interactions
+- **Documentation**: Create tutorials and workflow guides
+- **Testing**: Quality assurance and behavior verification
+- **Auditing**: Track and verify automated actions
+- **Training**: Demonstrate correct usage patterns
+
+### Storage Considerations
+- Recordings are saved in HD quality and may use significant disk space
+- Consider implementing a cleanup strategy for old recordings
+- Monitor the `recordings` directory size in production environments
