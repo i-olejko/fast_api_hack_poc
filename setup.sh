@@ -18,9 +18,9 @@ fi
 echo -e "${YELLOW}Installing system dependencies...${NC}"
 if command -v apt-get &> /dev/null; then
     sudo apt-get update
-    sudo apt-get install -y libgbm1
+    sudo apt-get install -y libgbm1 ffmpeg
 else
-    echo -e "${YELLOW}Unable to automatically install system dependencies. Please install libgbm1 manually if needed.${NC}"
+    echo -e "${YELLOW}Unable to automatically install system dependencies. Please install libgbm1 and ffmpeg manually if needed.${NC}"
 fi
 
 # Create and activate virtual environment
@@ -33,9 +33,14 @@ echo -e "${YELLOW}Installing Python dependencies...${NC}"
 pip install --upgrade pip
 pip install fastapi uvicorn python-dotenv browser-use playwright langchain-google-genai
 
-# Install Playwright browser
-echo -e "${YELLOW}Installing Playwright browser...${NC}"
+# Install Playwright browser and dependencies
+echo -e "${YELLOW}Installing Playwright browser and dependencies...${NC}"
 playwright install chromium
+playwright install --with-deps
+
+# Create recordings directory
+echo -e "${YELLOW}Creating recordings directory...${NC}"
+mkdir -p recordings
 
 # Create .env file if it doesn't exist
 if [ ! -f .env ]; then
@@ -71,4 +76,5 @@ echo -e "${GREEN}Setup completed successfully!${NC}"
 echo -e "${YELLOW}Next steps:${NC}"
 echo "1. Update the .env file with your Google API key"
 echo "2. Activate the virtual environment: source venv/bin/activate"
-echo "3. Run the application: uvicorn main:app --reload" 
+echo "3. Run the application: uvicorn main:app --reload"
+echo -e "${YELLOW}Note: Browser sessions will be recorded in HD quality in the 'recordings' directory${NC}" 
