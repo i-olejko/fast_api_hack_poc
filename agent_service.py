@@ -8,6 +8,7 @@ import json
 # Imports for the agent
 from browser_use import Agent
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from browser_use.controller.service import Controller
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
