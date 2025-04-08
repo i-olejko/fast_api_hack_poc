@@ -47,6 +47,13 @@ agent_service = AgentService()
 class TaskRequest(BaseModel):
     task_text: str
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "task_text": "Go to google.com and search for 'AI automation'"
+            }
+        }
+
 class ConsoleTaskRequest(BaseModel):
     strTask: str
     strFollowUpTask: str
@@ -65,9 +72,14 @@ else:
 @app.post("/run_task")
 async def run_task(request: TaskRequest):
     try:
-        task_text = request.task_text
+        # The request is already validated by FastAPI's Pydantic model
+        task_text = request.task_text.strip()  # Remove any whitespace
+        
         if not task_text:
-             raise HTTPException(status_code=400, detail="Missing 'task_text' in request body")
+            raise HTTPException(
+                status_code=400, 
+                detail="Task text cannot be empty. Please provide a task description."
+            )
 
         # --- Run the Agent via Service ---
         # The AgentService now handles setup and execution
