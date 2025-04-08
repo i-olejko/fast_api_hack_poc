@@ -1,9 +1,26 @@
 import React, { useState } from 'react';
 import '../App.css'; // Assuming styles are still in App.css
 
+const TEST_TASK = `
+1. Try to login with company email: x_email and password: x_password
+2. Navigate to the Browsing Roles by using nav bar on the left.
+3. Open a new role modal by clicking on the New Role button.
+4. Fill in the role name and description.
+5. Select "VIP" option from the "User Groups" dropdown.
+6. Close the "User Groups" dropdown list by clicking on open/close caret.
+7. Click on the "Save" button.
+8. Validate Role added. `;
+
+const TEST_FOLLOW_UP_TASK = `Click on the Browsing Roles nav item from nav bar on the left
+get the first role name and role description from the table of roles
+provide result as {foundName: str, foundDesc: str}
+Call done`;
+
+
+
 function ConsoleTestPage() {
-  const [strTask, setStrTask] = useState('');
-  const [strFollowUpTask, setStrFollowUpTask] = useState('');
+  const [strTask, setStrTask] = useState(TEST_TASK);
+  const [strFollowUpTask, setStrFollowUpTask] = useState(TEST_FOLLOW_UP_TASK);
   const [resultData, setResultData] = useState(null); // To store API response
   const [error, setError] = useState('');
 
@@ -33,10 +50,10 @@ function ConsoleTestPage() {
       // Assuming the backend returns { createdName: "...", foundName: "...", createdDesc: "...", fondDesc: "..." }
       // Correcting potential typo 'fondDesc' to 'foundDesc' based on context
       setResultData({
-        createdName: data.createdName || 'N/A',
-        foundName: data.foundName || 'N/A',
-        createdDesc: data.createdDesc || 'N/A',
-        foundDesc: data.fondDesc || data.foundDesc || 'N/A' // Handle both possible keys
+        createdName: data.result.createdName || 'N/A',
+        foundName: data.result.foundName || 'N/A',
+        createdDesc: data.result.createdDesc || 'N/A',
+        foundDesc: data.result.foundDesc || data.foundDesc || 'N/A' // Handle both possible keys
       });
 
     } catch (e) {
@@ -79,30 +96,11 @@ function ConsoleTestPage() {
       {error && <div className="error-message">Error: {error}</div>}
 
       {resultData && (
-        <div className="results-table-container">
+        <div className="results-card-container" style={{ border: '1px solid #ccc', padding: '16px', marginTop: '20px', borderRadius: '8px', maxWidth: '600px' }}>
           <h2>Results</h2>
-          <table className="results-table">
-            <thead>
-              <tr>
-                <th>Created Name</th>
-                <th>Found Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{resultData.createdName}</td>
-                <td>{resultData.foundName}</td>
-              </tr>
-              <tr>
-                <th>Created Description</th>
-                <th>Found Description</th>
-              </tr>
-              <tr>
-                <td>{resultData.createdDesc}</td>
-                <td>{resultData.foundDesc}</td>
-              </tr>
-            </tbody>
-          </table>
+          <p><strong>created name:</strong> {resultData.createdName}</p>
+          <p><strong>Created Description:</strong> {resultData.createdDesc}</p>
+          <p><strong>Agent output:</strong> {resultData.foundDesc}</p>
         </div>
       )}
     </div>

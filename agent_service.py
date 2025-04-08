@@ -9,6 +9,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from browser_use.controller.service import Controller
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
+from my_system_prompt import MySystemPrompt, GenerateRoleDetails
+from output_result import Result
 
 # Load environment variables - needed for API keys etc. within the service
 load_dotenv()
@@ -92,13 +94,38 @@ class AgentService:
         print(f"Received console task: {strTask}")
         print(f"Received follow-up task: {strFollowUpTask}")
 
+    
+        # Store the generated details for later comparison
+        generated_details = GenerateRoleDetails()
+
+        retVal = {
+            "createdName": generated_details["name"],
+            "createdDesc": generated_details["description"],
+            "foundName": "",
+            "foundDesc": ""
+        }
+
+        fragmets = []        
+        fragmets.append("NOTICE: Use the name and description provided below instead of generating new ones.")
+        fragmets.append(
+            f"Use the name: {generated_details["name"]} and description: {generated_details["description"]}."
+        )
+        fragmets.append("IMPORTANT LOGIN instruction: First you provide login email then click on the 'Next' button wait for animation to finish and then provide password and only then click 'login' button.")
+        #update strTask
+        updatedTask = f"{strTask}\n {' \n'.join(fragmets)}"
+
         if not self.g_llm:
              # If LLM wasn't initialized due to missing key, raise error here
              raise ValueError("AgentService cannot run: GEMINI_API_KEY is not configured.")
 
-        # Define initial actions if needed, or leave empty if task starts from blank slate
+        # get neme or empty
+        email = os.getenv('MY_NAME') or ""
+        my_pass = os.getenv('MY_PASS') or ""
+
+        sensitive_data = {'x_email': email, 'x_password': my_pass}
+
         initial_actions = [
-            {'open_tab': {'url': 'https://www.google.com'}}, # Example: start at Google
+            {'open_tab': {'url': 'https://dev5.proofpointisolation.com/console'}},
         ]
 
         # Initialize Browser components for this run
@@ -111,10 +138,10 @@ class AgentService:
              ),
              browser=browser
         )
-        controller = Controller()
+        controller = Controller(output_model=Result)
         # Initialize the Agent for this specific task
         agent = Agent(
-            task=strTask, # Use the task passed as argument
+            task=updatedTask, # Use the task passed as argument
             llm=self.g_llm,
             sensitive_data=self.sensitive_data,
             initial_actions=initial_actions,
@@ -122,7 +149,8 @@ class AgentService:
             max_actions_per_step=5,
             use_vision=True,
             browser_context=browser_context,
-            save_conversation_path=None # Disable saving logs for API endpoint
+            save_conversation_path=None, # Disable saving logs for API endpoint
+            system_prompt_class=MySystemPrompt
             # tool_calling_method="json_mode", # Optional: specify if needed
         )
 
@@ -131,10 +159,11 @@ class AgentService:
         history = await agent.run()
         result = history.final_result()
 
+        if result: 
+            parsed = Result.model_validate_json(result)
+            retVal["foundName"] = parsed.role_name
+            retVal["foundDesc"] = parsed.role_description
+
+        await browser_context.close()
         # Return the specified mock dictionary
-        return {
-            "createdName": "mock_created_name",
-            "createdDesc": "mock_created_description",
-            "foundName": "mock_found_name",
-            "fondDesc": "mock_found_description" # Using 'fondDesc' as requested
-        }
+        return retVal
