@@ -17,14 +17,25 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
 │   └── ...               # Other CRA files
 ├── venv/                 # Python virtual environment
 ├── main.py               # FastAPI application file
+├── .env                  # Environment configuration
+├── setup.sh              # Automated setup script
 └── README.md             # This file
 ```
 
 ## Setup
 
-1.  **Clone/Setup Project:** Ensure you are in the project's root directory.
+### Automated Setup (Recommended)
+Run the setup script to automatically configure the environment:
+```bash
+chmod +x setup.sh
+./setup.sh
+```
 
-2.  **Backend Setup (Python + FastAPI):**
+### Manual Setup
+
+1. **Clone/Setup Project:** Ensure you are in the project's root directory.
+
+2. **Backend Setup (Python + FastAPI):**
     *   Create and activate a Python virtual environment (if not already done):
         ```bash
         python3 -m venv venv
@@ -33,8 +44,18 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
         ```
     *   Install Python dependencies:
         ```bash
-        pip install fastapi uvicorn
+        pip install fastapi uvicorn python-dotenv browser-use playwright langchain-google-genai
         ```
+    *   Install Playwright browser:
+        ```bash
+        playwright install chromium
+        ```
+    *   Create and configure `.env` file:
+        ```bash
+        cp .env.example .env
+        # Edit .env with your API keys and configuration
+        ```
+
 3.  **Frontend Setup (React app in `/frontend` directory):**
     *   Navigate to the frontend directory:
         ```bash
@@ -52,6 +73,31 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
         ```bash
         cd ..
         ```
+
+## Environment Configuration
+
+The `.env` file contains the following configurations:
+
+```env
+# API Keys
+GOOGLE_API_KEY=your_google_api_key_here
+
+# FastAPI Configuration
+HOST=127.0.0.1
+PORT=8000
+
+# Browser Configuration
+BROWSER_HEADLESS=true  # Set to false for visible browser during development
+BROWSER_TIMEOUT=30000  # 30 seconds timeout for browser operations
+
+# Logging Configuration
+LOG_LEVEL=INFO
+```
+
+Make sure to:
+1. Replace `your_google_api_key_here` with your actual Google API key
+2. Adjust other configurations as needed for your environment
+3. Never commit the `.env` file to version control
 
 ## Running the Application
 
