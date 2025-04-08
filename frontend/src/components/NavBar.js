@@ -15,7 +15,7 @@ function NavBar({ theme, onThemeChange }) {
         <div className="nav-left">
           <ul>
             <li>
-              <Link to="/">FreeRun</Link>
+              <Link to="/">Free Run</Link>
             </li>
             <li>
               <Link to="/console-test">Console Test</Link>

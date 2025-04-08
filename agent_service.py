@@ -92,6 +92,45 @@ class AgentService:
         print(f"Received console task: {strTask}")
         print(f"Received follow-up task: {strFollowUpTask}")
 
+        if not self.g_llm:
+             # If LLM wasn't initialized due to missing key, raise error here
+             raise ValueError("AgentService cannot run: GEMINI_API_KEY is not configured.")
+
+        # Define initial actions if needed, or leave empty if task starts from blank slate
+        initial_actions = [
+            {'open_tab': {'url': 'https://www.google.com'}}, # Example: start at Google
+        ]
+
+        # Initialize Browser components for this run
+        # Consider if browser/context should be reused across runs for performance
+        browser = Browser(config=BrowserConfig(new_context_config=BrowserContextConfig(viewport_expansion=0)))
+        browser_context = BrowserContext(
+             config=BrowserContextConfig(
+                  browser_window_size={'width': 1280, 'height': 1200},
+                  locale='en-US',
+             ),
+             browser=browser
+        )
+        controller = Controller()
+        # Initialize the Agent for this specific task
+        agent = Agent(
+            task=strTask, # Use the task passed as argument
+            llm=self.g_llm,
+            sensitive_data=self.sensitive_data,
+            initial_actions=initial_actions,
+            controller=controller,
+            max_actions_per_step=5,
+            use_vision=True,
+            browser_context=browser_context,
+            save_conversation_path=None # Disable saving logs for API endpoint
+            # tool_calling_method="json_mode", # Optional: specify if needed
+        )
+
+        await agent.run()
+        agent.add_new_task(strFollowUpTask)
+        history = await agent.run()
+        result = history.final_result()
+
         # Return the specified mock dictionary
         return {
             "createdName": "mock_created_name",
