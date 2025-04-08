@@ -1,0 +1,67 @@
+.recording-page {
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.recording-list {
+  list-style: none;
+  padding: 0;
+}
+
+.recording-item {
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.recording-item h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.metadata-section h3,
+.videos-section h3 {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-size: 1.1em;
+  color: #555;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 3px;
+}
+
+.metadata-section pre {
+  background-color: #eee;
+  padding: 10px;
+  border-radius: 3px;
+  white-space: pre-wrap; /* Wrap long lines */
+  word-wrap: break-word; /* Break long words */
+  font-size: 0.9em;
+}
+
+.video-container {
+  display: flex; /* Arrange videos side-by-side */
+  flex-wrap: wrap; /* Allow wrapping to next line if needed */
+  gap: 10px; /* Add space between videos */
+}
+
+.video-wrapper {
+  /* Optional: Add styling for individual video wrappers if needed */
+}
+
+.video-wrapper video {
+  max-width: 100%; /* Ensure videos don't overflow their container */
+  height: auto;
+  display: block; /* Remove extra space below video */
+}
+
+.error-message {
+  color: #d9534f; /* Bootstrap danger color */
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}

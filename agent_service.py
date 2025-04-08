@@ -8,6 +8,7 @@ import json
 # Imports for the agent
 from browser_use import Agent
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from browser_use.controller.service import Controller
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
@@ -80,7 +81,7 @@ class AgentService:
         # Initialize the Agent for this specific task
         agent = Agent(
             task=task_text, # Use the task passed as argument
-            llm=self.g_llm,
+            llm=self.g_llm,        
             sensitive_data=self.sensitive_data,
             initial_actions=[{'go_to_url': {'url': 'https://www.google.com'}}],  # Use goto_url to navigate in the current tab
             controller=controller,
@@ -118,6 +119,11 @@ class AgentService:
         print(f"Received console task: {strTask}")
         print(f"Received follow-up task: {strFollowUpTask}")
 
+        test_llm = ChatOpenAI(
+            model='openai.o1-mini',
+            temperature=0.1,
+            openai_api_base='https://litellm-hackday.dev.mlinf.ppops.net/v1'
+        )
     
         # Store the generated details for later comparison
         generated_details = GenerateRoleDetails()
@@ -166,7 +172,7 @@ class AgentService:
         # Initialize the Agent for this specific task
         agent = Agent(
             task=updatedTask, # Use the task passed as argument
-            llm=self.g_llm,
+            llm=test_llm,
             sensitive_data=self.sensitive_data,
             initial_actions=initial_actions,
             controller=controller,

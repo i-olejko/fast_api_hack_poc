@@ -14,7 +14,7 @@ from browser_use.controller.service import Controller
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from agent_service import AgentService # Import the new service
-
+from routers import recordings # Import the new recordings router
 # Load environment variables from .env file
 load_dotenv()
 
@@ -38,6 +38,9 @@ app.add_middleware(
     allow_methods=["*"], # Allows all methods
     allow_headers=["*"], # Allows all headers
 )
+
+# --- Include Routers ---
+app.include_router(recordings.router)
 
 # --- Instantiate Agent Service ---
 # Instantiate once to potentially reuse resources like the LLM client
@@ -66,6 +69,13 @@ if os.path.exists(static_dir):
      app.mount("/static", StaticFiles(directory=static_dir), name="static")
 else:
     print(f"Warning: Static directory not found at {static_dir}. Frontend might not load correctly.")
+
+# Mount recordings directory for static serving
+recordings_dir = "recordings"
+if os.path.exists(recordings_dir) and os.path.isdir(recordings_dir):
+    app.mount("/recordings", StaticFiles(directory=recordings_dir), name="recordings")
+else:
+     print(f"Warning: Recordings directory not found at {recordings_dir}. Video URLs might not work.")
 
 
 # --- New Endpoint for Running AI Agent Task ---

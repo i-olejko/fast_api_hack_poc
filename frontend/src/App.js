@@ -5,6 +5,7 @@ import NavBar from './components/NavBar';
 import TopBar from './components/TopBar';
 import FreeRunPage from './pages/FreeRunPage';
 import ConsoleTestPage from './pages/ConsoleTestPage';
+import RecordingPage from './pages/RecordingPage'; // Import the new page
 
 function App() {
   const [theme, setTheme] = useState('LIGHT');
@@ -23,6 +24,7 @@ function App() {
             <Routes>
               <Route path="/" element={<FreeRunPage />} />
               <Route path="/console-test" element={<ConsoleTestPage />} />
+              <Route path="/recording" element={<RecordingPage />} /> {/* Add route for RecordingPage */}
             </Routes>
           </div>
         </div>
