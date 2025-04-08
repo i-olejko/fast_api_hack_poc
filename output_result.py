@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
-class Result(BaseModel):
-	role_name: str
-	role_description: str
+class TableExtruction(BaseModel):
+	first_extracted_role_name: str
+	first_extracted_role_description: str
