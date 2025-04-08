@@ -14,6 +14,15 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
+# Install system dependencies
+echo -e "${YELLOW}Installing system dependencies...${NC}"
+if command -v apt-get &> /dev/null; then
+    sudo apt-get update
+    sudo apt-get install -y libgbm1
+else
+    echo -e "${YELLOW}Unable to automatically install system dependencies. Please install libgbm1 manually if needed.${NC}"
+fi
+
 # Create and activate virtual environment
 echo -e "${YELLOW}Setting up Python virtual environment...${NC}"
 python3 -m venv venv
@@ -33,7 +42,7 @@ if [ ! -f .env ]; then
     echo -e "${YELLOW}Creating .env file...${NC}"
     cat > .env << EOL
 # API Keys
-GOOGLE_API_KEY=your_google_api_key_here
+GEMINI_API_KEY=your_google_api_key_here  # Required for Gemini AI model
 
 # FastAPI Configuration
 HOST=127.0.0.1

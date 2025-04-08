@@ -1,9 +1,46 @@
 # FastAPI + React Python Code Runner (Hackathon PoC)
 
-This project is a proof-of-concept demonstrating a Python FastAPI backend serving a React frontend. The frontend allows users to submit Python code as text, which the backend executes using Python's `exec()` function.
+This project is a proof-of-concept demonstrating a Python FastAPI backend serving a React frontend. The frontend allows users to submit Python code as text, which the backend executes using Python's `exec()` function. The project uses Google's Gemini AI model through LangChain for browser automation and task execution.
 
 **🚨 SECURITY WARNING 🚨**
 This application uses `exec()` to run arbitrary Python code submitted by the user. **This is extremely dangerous and should NEVER be used in a production environment or any environment where security is a concern.** This PoC is intended solely for demonstration purposes in a controlled hackathon setting.
+
+## System Requirements
+
+- Python 3.11 or higher
+- Node.js and npm (for frontend development)
+- System dependencies for browser automation:
+  ```bash
+  # On Ubuntu/Debian:
+  sudo apt-get install -y libgbm1
+
+  # Or using Playwright's command (if available):
+  sudo playwright install-deps
+  ```
+
+## Quick Start (Automated Setup)
+
+The easiest way to get started is using our automated setup script:
+
+```bash
+# Make the script executable
+chmod +x setup.sh
+
+# Run the setup script
+./setup.sh
+```
+
+The script will:
+1. Create and activate a Python virtual environment
+2. Install all required dependencies
+3. Set up the Playwright browser
+4. Create a `.env` file with default configurations
+5. Build the frontend (if present)
+
+After running the script:
+1. Update the `.env` file with your Google API key
+2. Activate the virtual environment: `source venv/bin/activate`
+3. Run the application: `uvicorn main:app --reload`
 
 ## Folder Structure
 
@@ -22,16 +59,9 @@ This application uses `exec()` to run arbitrary Python code submitted by the use
 └── README.md             # This file
 ```
 
-## Setup
+## Manual Setup (Alternative)
 
-### Automated Setup (Recommended)
-Run the setup script to automatically configure the environment:
-```bash
-chmod +x setup.sh
-./setup.sh
-```
-
-### Manual Setup
+If you prefer to set up manually or the automated script doesn't work for your environment:
 
 1. **Clone/Setup Project:** Ensure you are in the project's root directory.
 
@@ -80,7 +110,7 @@ The `.env` file contains the following configurations:
 
 ```env
 # API Keys
-GOOGLE_API_KEY=your_google_api_key_here
+GEMINI_API_KEY=your_google_api_key_here  # Required for Gemini AI model
 
 # FastAPI Configuration
 HOST=127.0.0.1
@@ -95,7 +125,7 @@ LOG_LEVEL=INFO
 ```
 
 Make sure to:
-1. Replace `your_google_api_key_here` with your actual Google API key
+1. Replace `your_google_api_key_here` with your actual Google API key (get one from https://makersuite.google.com/app/apikey)
 2. Adjust other configurations as needed for your environment
 3. Never commit the `.env` file to version control
 
@@ -107,8 +137,12 @@ Make sure to:
     uvicorn main:app --reload --host 127.0.0.1 --port 8000
     ```
     *   `--reload` enables auto-reloading for backend development (optional).
-    *   You can also run using `python main.py` if the `if __name__ == "__main__":` block is present.
-3. To build and start the entire project (frontend and backend) using npm, you can also run:
+3.  In a separate terminal, run the main Python application:
+    ```bash
+    python main.py
+    ```
+    *   This will start the browser automation and AI agent components.
+4.  To build and start the entire project (frontend and backend) using npm, you can also run:
     ```bash
     npm run start
     ```
