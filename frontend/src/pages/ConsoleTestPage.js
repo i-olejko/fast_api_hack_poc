@@ -12,11 +12,8 @@ const TEST_TASK = `
 8. Validate Role added. `;
 
 const TEST_FOLLOW_UP_TASK = `Click on the Browsing Roles nav item from nav bar on the left
-get the first role name and role description from the table of roles
-provide result as {foundName: str, foundDesc: str}
+extract the first role name and role description from the table of roles
 Call done`;
-
-
 
 function ConsoleTestPage() {
   const [strTask, setStrTask] = useState(TEST_TASK);
@@ -100,7 +97,7 @@ function ConsoleTestPage() {
           <h2>Results</h2>
           <p><strong>created name:</strong> {resultData.createdName}</p>
           <p><strong>Created Description:</strong> {resultData.createdDesc}</p>
-          <p><strong>Agent output:</strong> {resultData.foundDesc}</p>
+          <p><strong>Agent output:</strong> found name: {resultData.foundName}, found description: {resultData.foundDesc}</p>
         </div>
       )}
     </div>

@@ -8,11 +8,12 @@ import json
 # Imports for the agent
 from browser_use import Agent
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from browser_use.controller.service import Controller
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContext, BrowserContextConfig
 from my_system_prompt import MySystemPrompt, GenerateRoleDetails
-from output_result import Result
+from output_result import TableExtruction
 
 # Load environment variables - needed for API keys etc. within the service
 load_dotenv()
@@ -33,8 +34,13 @@ class AgentService:
                 api_key=SecretStr(api_key),
             )
         # Pre-load sensitive data if it's static
+        self.th_llm = ChatGoogleGenerativeAI(
+            model='gemini-2.5-pro-preview-03-25',
+            api_key=SecretStr(api_key),
+        )
         email = os.getenv('MY_NAME') or ""
         my_pass = os.getenv('MY_PASS') or ""
+        self.email = email        
         self.sensitive_data = {'x_email': email, 'x_password': my_pass}
 
         # Set up recording configuration
@@ -118,7 +124,20 @@ class AgentService:
         print(f"Received console task: {strTask}")
         print(f"Received follow-up task: {strFollowUpTask}")
 
-    
+        # Create a unique recording path for this session
+        timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        recording_path = os.path.join(self.recordings_dir, f'{timestamp}')
+        os.makedirs(recording_path, exist_ok=True)
+
+        # Initialize metadata
+        metadata = {
+            "directory": recording_path,
+            "recording_path": os.path.join(recording_path, "session.webm"),
+            "metadata_path": os.path.join(recording_path, "metadata.json"),
+            "start_time": datetime.now().isoformat(),
+            "task": strTask
+        }  
+
         # Store the generated details for later comparison
         generated_details = GenerateRoleDetails()
 
@@ -134,22 +153,14 @@ class AgentService:
         fragmets.append(
             f"Use the name: {generated_details["name"]} and description: {generated_details["description"]}."
         )
-        fragmets.append("IMPORTANT LOGIN instruction: First you provide login email then click on the 'Next' button wait for animation to finish and then provide password and only then click 'login' button.")
+        fragmets.append('IMPORTANT LOGIN instruction: always email and password from sensitive data (secret)')
+        # fragmets.append("IMPORTANT LOGIN instruction: First you provide login email (usually element with index 0) then click on the 'Next' button (usually element with index 1) and then provide password and only then click 'login' button.")
         #update strTask
         updatedTask = f"{strTask}\n {' \n'.join(fragmets)}"
 
-        if not self.g_llm:
-             # If LLM wasn't initialized due to missing key, raise error here
-             raise ValueError("AgentService cannot run: GEMINI_API_KEY is not configured.")
-
-        # get neme or empty
-        email = os.getenv('MY_NAME') or ""
-        my_pass = os.getenv('MY_PASS') or ""
-
-        sensitive_data = {'x_email': email, 'x_password': my_pass}
-
         initial_actions = [
             {'open_tab': {'url': 'https://dev5.proofpointisolation.com/console'}},
+            {'input_text': {'index': 0, 'text': self.email}},
         ]
 
         # Initialize Browser components for this run
@@ -159,10 +170,11 @@ class AgentService:
              config=BrowserContextConfig(
                   browser_window_size={'width': 1280, 'height': 1200},
                   locale='en-US',
+                  save_recording_path=recording_path  # Enable video recording
              ),
              browser=browser
         )
-        controller = Controller(output_model=Result)
+        controller = Controller(output_model=TableExtruction)
         # Initialize the Agent for this specific task
         agent = Agent(
             task=updatedTask, # Use the task passed as argument
@@ -174,19 +186,34 @@ class AgentService:
             use_vision=True,
             browser_context=browser_context,
             save_conversation_path=None, # Disable saving logs for API endpoint
-            system_prompt_class=MySystemPrompt
+            planner_llm=self.th_llm,
+            use_vision_for_planner=True,
+            planner_interval=4,
             # tool_calling_method="json_mode", # Optional: specify if needed
         )
 
         await agent.run()
         agent.add_new_task(strFollowUpTask)
+        agent.initial_actions = []
         history = await agent.run()
-        result = history.final_result()
+        result = history.final_result()       
 
         if result: 
-            parsed = Result.model_validate_json(result)
-            retVal["foundName"] = parsed.role_name
-            retVal["foundDesc"] = parsed.role_description
+            parsed = TableExtruction.model_validate_json(result)
+            retVal["foundName"] = parsed.first_extracted_role_name
+            retVal["foundDesc"] = parsed.first_extracted_role_description
+
+        print(retVal)
+
+        # Update metadata with end time, result, and URLs
+        metadata["end_time"] = datetime.now().isoformat()
+        metadata["result"] = str(result)
+        metadata["urls"] = history.urls()
+        metadata["errors"] = history.errors()
+        metadata["action_names"] = history.action_names()
+        # Save metadata
+        with open(metadata["metadata_path"], 'w') as f:
+            json.dump(metadata, f, indent=2)
 
         await browser_context.close()
         # Return the specified mock dictionary
