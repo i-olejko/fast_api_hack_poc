@@ -33,6 +33,9 @@ class AgentService:
         my_pass = os.getenv('MY_PASS') or ""
         self.sensitive_data = {'x_email': email, 'x_password': my_pass}
 
+        # Set up recording configuration
+        self.recordings_dir = os.path.join(os.getcwd(), 'recordings')
+        os.makedirs(self.recordings_dir, exist_ok=True)
 
     async def run(self, task_text: str):
         """
@@ -42,18 +45,20 @@ class AgentService:
              # If LLM wasn't initialized due to missing key, raise error here
              raise ValueError("AgentService cannot run: GEMINI_API_KEY is not configured.")
 
-        # Define initial actions if needed, or leave empty if task starts from blank slate
-        initial_actions = [
-            {'open_tab': {'url': 'https://www.google.com'}}, # Example: start at Google
-        ]
-
         # Initialize Browser components for this run
         # Consider if browser/context should be reused across runs for performance
         browser = Browser(config=BrowserConfig(new_context_config=BrowserContextConfig(viewport_expansion=0)))
+        
+        # Create a unique recording path for this session
+        session_id = asyncio.current_task().get_name()
+        recording_path = os.path.join(self.recordings_dir, f'session_{session_id}')
+        os.makedirs(recording_path, exist_ok=True)
+
         browser_context = BrowserContext(
              config=BrowserContextConfig(
-                  browser_window_size={'width': 1280, 'height': 1200},
+                  browser_window_size={'width': 1920, 'height': 1080},  # HD resolution
                   locale='en-US',
+                  save_recording_path=recording_path  # Enable video recording
              ),
              browser=browser
         )
@@ -64,7 +69,7 @@ class AgentService:
             task=task_text, # Use the task passed as argument
             llm=self.g_llm,
             sensitive_data=self.sensitive_data,
-            initial_actions=initial_actions,
+            initial_actions=[{'go_to_url': {'url': 'https://www.google.com'}}],  # Use goto_url to navigate in the current tab
             controller=controller,
             max_actions_per_step=5,
             use_vision=True,
