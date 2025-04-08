@@ -2,6 +2,8 @@ import os
 import asyncio
 from dotenv import load_dotenv
 from pydantic import SecretStr
+from datetime import datetime
+import json
 
 # Imports for the agent
 from browser_use import Agent
@@ -50,9 +52,18 @@ class AgentService:
         browser = Browser(config=BrowserConfig(new_context_config=BrowserContextConfig(viewport_expansion=0)))
         
         # Create a unique recording path for this session
-        session_id = asyncio.current_task().get_name()
-        recording_path = os.path.join(self.recordings_dir, f'session_{session_id}')
+        timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        recording_path = os.path.join(self.recordings_dir, f'{timestamp}')
         os.makedirs(recording_path, exist_ok=True)
+
+        # Initialize metadata
+        metadata = {
+            "directory": recording_path,
+            "recording_path": os.path.join(recording_path, "session.webm"),
+            "metadata_path": os.path.join(recording_path, "metadata.json"),
+            "start_time": datetime.now().isoformat(),
+            "task": task_text
+        }
 
         browser_context = BrowserContext(
              config=BrowserContextConfig(
@@ -74,14 +85,22 @@ class AgentService:
             max_actions_per_step=5,
             use_vision=True,
             browser_context=browser_context,
-            save_conversation_path=None # Disable saving logs for API endpoint
-            # tool_calling_method="json_mode", # Optional: specify if needed
         )
 
         # --- Run the Agent ---
         # Note: agent.run() is async and might take time
         history = await agent.run()
         result = history.final_result() # Assuming final_result() gives the desired output
+
+        # Update metadata with end time, result, and URLs
+        metadata["end_time"] = datetime.now().isoformat()
+        metadata["result"] = str(result)
+        metadata["urls"] = history.urls()
+        metadata["errors"] = history.errors()
+        metadata["action_names"] = history.action_names()
+        # Save metadata
+        with open(metadata["metadata_path"], 'w') as f:
+            json.dump(metadata, f, indent=2)
 
         # Close browser context after task completion
         await browser_context.close()
