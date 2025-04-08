@@ -35,3 +35,10 @@ plz refactor the ConsoleTestPage:
 the page should have 2 text inputs and only one "Run Task" button that will collect text from both inputs and will post them to backend
 ------------------------------------------------------------
 the ConsoleTestPage should have inputs of type textarea
+------------------------------------------------------------
+i want to add new functionality. 
+my project produces recordings and puts them into the /recordings folder 
+each recordig is placed in its own folder with have name patern DD-MM-YYYY_HH-MM-SS
+and its contains 2 .webm video files and matadata.json. 
+
+i wnat you to create new page in the frontend name recording where user can get last 10 created recordings and wathc them.

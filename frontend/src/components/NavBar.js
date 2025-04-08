@@ -20,6 +20,9 @@ function NavBar({ theme, onThemeChange }) {
             <li>
               <Link to="/console-test">Console Test</Link>
             </li>
+            <li>
+              <Link to="/recording">Recordings</Link> {/* Add link to Recordings page */}
+            </li>
           </ul>
         </div>
       </div>

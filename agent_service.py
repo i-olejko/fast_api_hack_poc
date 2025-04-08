@@ -40,7 +40,7 @@ class AgentService:
         )
         email = os.getenv('MY_NAME') or ""
         my_pass = os.getenv('MY_PASS') or ""
-        self.email = email        
+        self.email = email
         self.sensitive_data = {'x_email': email, 'x_password': my_pass}
 
         # Set up recording configuration
@@ -136,7 +136,7 @@ class AgentService:
             "metadata_path": os.path.join(recording_path, "metadata.json"),
             "start_time": datetime.now().isoformat(),
             "task": strTask
-        }  
+        }
 
         # Store the generated details for later comparison
         generated_details = GenerateRoleDetails()
@@ -196,7 +196,7 @@ class AgentService:
         agent.add_new_task(strFollowUpTask)
         agent.initial_actions = []
         history = await agent.run()
-        result = history.final_result()       
+        result = history.final_result()
 
         if result: 
             parsed = TableExtruction.model_validate_json(result)
